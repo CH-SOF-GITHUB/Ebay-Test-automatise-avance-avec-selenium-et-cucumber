@@ -1,5 +1,8 @@
 package org.chatgpt.tests.exercice1;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -14,6 +17,16 @@ import java.time.Duration;
 public class Logout {
     // fonction main pour éxecuter les code
     public static void main(String[] args) throws InterruptedException {
+        // 1. Définir le chemin du rapport
+        ExtentSparkReporter htmlReporter = new ExtentSparkReporter("target/reports/logout.html");
+
+        // 2. Créer un objet ExtentReports
+        ExtentReports extent = new ExtentReports();
+        extent.attachReporter(htmlReporter);
+
+        // 3. Ajouter un test
+        ExtentTest test = extent.createTest("Test eBay Logout", "tester la fonctionnalité logout sur eBay");
+
         // déclaration Web Driver: initialisation et ouverture d'un navigateur
         WebDriver driver = new ChromeDriver();
         // ouvrir la page de connexion
@@ -49,18 +62,18 @@ public class Logout {
         // attendre un temps de 2 seconds et vérifier la connexion
         Thread.sleep(2000);
         String currentURL = driver.getCurrentUrl();
-        System.out.println(currentURL);
+        //System.out.println(currentURL);
         if (currentURL.equals("https://www.ebay.fr/")) {
-            System.out.println("connexion avec succès");
+            test.pass("connexion avec succès");
         } else {
-            System.out.println("échec de connexion");
+            test.fail("échec de connexion");
         }
 
         // attendre loading page
         Thread.sleep(5000);
 
         // cliquer sur le lien sign out et redirection vers la page confirmation logout
-        WebElement userMenu  = driver.findElement(By.className("gh-identity"));
+        WebElement userMenu = driver.findElement(By.className("gh-identity"));
 
         // Classe Acions: actions utilisateur complexes.
         // Utilisez cette classe plutôt que d'utiliser directement le clavier ou la souris.
@@ -68,7 +81,7 @@ public class Logout {
         Actions actions = new Actions(driver);
         actions.moveToElement(userMenu).perform();
         // attendre affichage lien signout
-        Thread.sleep(5000);
+        Thread.sleep(2000);
         WebElement linksignout = driver.findElement(By.linkText("Se déconnecter"));
         linksignout.click();
 
@@ -76,10 +89,18 @@ public class Logout {
         Thread.sleep(2000);
         String url = driver.getCurrentUrl();
         if (url.equals("https://signin.ebay.fr/logout/confirm?sgfl=gh")) {
-            System.out.println("déconnexion avec succès");
+            test.pass("déconnexion avec succès");
         } else {
-            System.out.println("échec de déconnexion et affichage un message d'erreur");
+            test.fail("échec de déconnexion et affichage un message d'erreur");
         }
 
+        // fermer le navigateur
+        driver.quit();
+        test.info("Test terminé et navigateur fermé");
+
+        // générer le rapport
+        extent.flush();
+
+        System.out.println("✅ Rapport généré : target/reports/logout.html");
     }
 }
