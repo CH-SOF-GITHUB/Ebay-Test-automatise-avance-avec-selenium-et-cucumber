@@ -1,4 +1,4 @@
-package org.chatgpt.tests.exercice1;
+package org.chatgpt.Exercice1;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

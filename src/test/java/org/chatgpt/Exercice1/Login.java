@@ -1,4 +1,4 @@
-package org.chatgpt.tests.exercice1;
+package org.chatgpt.Exercice1;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
